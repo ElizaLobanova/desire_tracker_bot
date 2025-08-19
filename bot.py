@@ -306,6 +306,24 @@ async def setinterval(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     await update.message.reply_text(f"Интервал обновлен: {minutes} минут. Следующее напоминание через ~{minutes} минут.")
 
 
+async def report(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if update.effective_user is None or update.message is None or update.effective_chat is None:
+        return
+    user = data_store.ensure_user(update.effective_user.id, update.effective_chat.id)
+    text = " ".join(context.args).strip()
+    if not text:
+        await update.message.reply_text(
+            "Использование: /report <текст> — отправить ответ на вопрос независимо от напоминаний."
+        )
+        return
+    data_store.add_report_entry(update.effective_user.id, text)
+    # Не переводим в режим ожидания — сразу просим выбрать героя
+    await update.message.reply_text(
+        "С каким героем вы сейчас себя ассоциируете?",
+        reply_markup=_build_hero_keyboard(),
+    )
+
+
 async def addplan(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if update.effective_user is None:
         return
@@ -444,7 +462,8 @@ async def on_startup(app: Application) -> None:
         BotCommand("doneplan", "Отметить пункт как выполненный"),
         BotCommand("heroes", "Список доступных архетипов"),
         BotCommand("getinterval", "Текущий интервал между напоминаниями"),
-        BotCommand("setinterval", "Изменить интервал между напоминаниями")
+        BotCommand("setinterval", "Изменить интервал между напоминаниями"),
+        BotCommand("report", "Отправить отчет вручную")
     ]
     await app.bot.set_my_commands(commands)
 
@@ -469,6 +488,7 @@ def main() -> None:
     application.add_handler(CommandHandler("heroes", heroes))
     application.add_handler(CommandHandler("getinterval", getinterval))
     application.add_handler(CommandHandler("setinterval", setinterval))
+    application.add_handler(CommandHandler("report", report))
     application.add_handler(CommandHandler("addplan", addplan))
     application.add_handler(CommandHandler("listplans", listplans))
     application.add_handler(CommandHandler("doneplan", doneplan))
