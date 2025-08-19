@@ -250,7 +250,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await schedule_reminders_for_user(context.application, update.effective_user.id, user["chat_id"])
     await update.message.reply_text(
         "Привет! Я буду периодически спрашивать, что вы сделали, и предлагать выбрать героя (по умолчанию каждые 60 минут).\n"
-        "Команды: /setinterval, /getinterval, /pause, /resume, /addplan, /listplans, /doneplan, /heroes."
+        "Команды: /report, /setinterval, /getinterval, /pause, /resume, /addplan, /listplans, /doneplan, /heroes."
     )
 
 
@@ -383,7 +383,7 @@ async def hourly_prompt_job(context: ContextTypes.DEFAULT_TYPE) -> None:
 
     try:
         interval_minutes = data_store.get_interval_minutes(user_id)
-        await context.bot.send_message(chat_id=chat_id, text=f"Что вы сделали за последние {interval_minutes} минут?")
+        await context.bot.send_message(chat_id=chat_id, text=f"Что вы сделали за последние {interval_minutes} минут? Используйте команду /report для ответа.")
         data_store.mark_awaiting_report(user_id, True)
     except Exception:
         return
