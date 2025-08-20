@@ -2,6 +2,7 @@ import asyncio
 import json
 import os
 import html
+import random
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -217,7 +218,7 @@ class RecommendationEngine:
 
         desire_part: str
         if hero and hero in cls.HERO_SUGGESTIONS:
-            suggestion = cls.HERO_SUGGESTIONS[hero][0]
+            suggestion = cls.HERO_SUGGESTIONS[hero][random.randrange(3)]
             desire_part = f"Следуй желанию ({hero}): {suggestion}."
         else:
             desire_part = "Следуй желанию: выбери маленький шаг, который радует тебя сейчас."
