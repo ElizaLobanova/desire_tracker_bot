@@ -186,9 +186,10 @@ class RecommendationEngine:
             "переработай один небольшой фрагмент предыдущей работы",
         ],
         "Стратег": [
-            "уточни один критерий успеха для ближайшей цели",
+            "разведай новую возможность или риск — запиши один инсайт",
             "разбей крупную задачу на 3 конкретных шага",
-            "проверь риски и подготовь план Б на один пункт",
+            "отточи инструмент: улучши функцию, навык или ресурс на 1 шаг",
+            "укрепи союз: попроси помощь или дай поддержку одному союзнику",
         ],
         "Заботливый": [
             "сделай короткую паузу на восстановление (10 минут)",
@@ -218,7 +219,7 @@ class RecommendationEngine:
 
         desire_part: str
         if hero and hero in cls.HERO_SUGGESTIONS:
-            suggestion = cls.HERO_SUGGESTIONS[hero][random.randrange(3)]
+            suggestion = cls.HERO_SUGGESTIONS[hero][random.randrange(len(cls.HERO_SUGGESTIONS[hero]))]
             desire_part = f"Следуй желанию ({hero}): {suggestion}."
         else:
             desire_part = "Следуй желанию: выбери маленький шаг, который радует тебя сейчас."
